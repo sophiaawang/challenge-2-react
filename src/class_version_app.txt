@@ -1,0 +1,476 @@
+import { useState, useCallback, useEffect} from "react";
+import './App.css';
+
+// 
+
+export const App = () => {
+  const targets = [1, 2, 3, 4, 5];
+  const displayClassifications = ["N/A", "N/A", "N/A", "N/A", "N/A"];
+  const displayAlphas = ["N/A", "N/A", "N/A", "N/A", "N/A"];
+  const displayAlphaColors = ["N/A", "N/A", "N/A", "N/A", "N/A"];
+  const displayShapes = ["N/A", "N/A", "N/A", "N/A", "N/A"];
+  const displayShapeColors = ["N/A", "N/A", "N/A", "N/A", "N/A"];
+
+  const getRequest = () => {
+    fetch('http://localhost:8080/target/1', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/2', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/3', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/4', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/5', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+  }
+
+  const [target1, setTarget1] = useState([]);
+  const [target2, setTarget2] = useState([]);
+  const [target3, setTarget3] = useState([]);
+  const [target4, setTarget4] = useState([]);
+  const [target5, setTarget5] = useState([]);
+
+// TODO: instead of only updating the target_ consts, update the displayClassificiations, etc... to make it display
+useEffect (() => {
+  fetch('http://localhost:8080/target/1', getRequest)
+  .then((res) => {
+    return res.text();
+  })
+  .then((data) => {
+    // console.log(data + " t1");
+    setTarget1(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+
+  fetch('http://localhost:8080/target/2', getRequest)
+  .then((res) => {
+    return res.text();
+  })
+  .then((data) => {
+      setTarget2(data);
+  })
+  .catch((err) => {
+      console.log(err.message);
+  })
+
+  fetch('http://localhost:8080/target/3', getRequest)
+  .then((res) => {
+    return res.text();
+  })
+  .then((data) => {
+    setTarget3(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+  
+  fetch('http://localhost:8080/target/4', getRequest)
+  .then((res) => {
+    return res.text();
+  })
+  .then((data) => {
+      setTarget4(data);
+  })
+  .catch((err) => {
+      console.log(err.message);
+  });
+
+  fetch('http://localhost:8080/target/5', getRequest)
+  .then((res) => {
+    return res.text();
+  })
+  .then((data) => {
+    setTarget5(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+  // targets, setTargets -> array of strings and for loop in here to pass in stuff...
+}, []);
+
+const [posts, setPosts] = useState([]);
+const [title, setTitle] = useState('');
+const [body, setBody] = useState('');
+
+// todo send data (classification, targetNum, isETarget, alpha, alphaColor, shape, shapeColor) to springboot
+const sendPost = () => {
+  fetch('http://localhost:8080/target/1', {
+     method: 'POST',
+     body: JSON.stringify(body),
+     headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+     },
+  })
+     .then((res) => res.json())
+     .then((post) => {
+      console.log("reached this point??");
+      // NEED TO USE USEEFFECT -> CREATES FUNCTION THAT ONLY RUNS WHEN NEEDS TO
+      // EG WHEN A STATE VAR CHANGES 
+        // setPosts((posts) => [post, ...posts]);
+        // setTitle('');
+        // setBody('');
+     })
+     .catch((err) => {
+        console.log(err.message);
+     });
+
+    //  await fetch(`http://localhost:8080/auth/login`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(usr)
+    // })
+    // .then((response) => {
+    //   console.log(response);
+    // });
+
+};
+
+
+
+  const toBeHidden = document.querySelectorAll("#toHide");
+  const firstButton = document.querySelector("#button1");
+  let springbootSection = document.querySelector("#springboot");
+  const alphaEntry = document.querySelector("#alphaEntry");
+
+  const [classification, setClassification] = useState("Emerging Target");
+  const [targetNum, setTargetNum] = useState(1);
+  const [isETarget, setETarget] = useState(true);
+
+  const alphaRegex = new RegExp(/^[a-zA-Z]$/);
+  const [alpha, setAlpha] = useState('');
+  const [alphaColor, setAlphaColor] = useState("White");
+  const [shapeColor, setShapeColor] = useState("White");
+  const [shape, setShape] = useState("Circle");
+
+  // lists to shorten dropdown code: 
+  const [colors, setColors] = useState([{value:"White"}, {value:"Black"}, {value:"Gray"},
+  {value:"Red"}, {value:"Blue"}, {value:"Green"}, {value:"Yellow"}, {value:"Purple"}, 
+  {value:"Brown"}, {value:"Orange"}]);
+
+  const [shapes, setShapes] = useState([{value:"Circle"}, {value:"Semicircle"}, {value:"QuarterCircle"}, 
+  {value:"Triangle"}, {value:"Trapezoid"}, {value:"Rectangle"}, {value:"Circle"}, {value:"Pentagon"}, 
+  {value:"Hexagon"}, {value:"Heptagon"}, {value:"Octagon"}, {value:"Star"}, {value:"Cross"}]);
+  
+  const selectTarget = (tN) => {
+    console.log("alskfjd " + tN.target.value);
+    setTargetNum(tN.target.value);
+  };
+
+  const selectClassification = (event) => {
+    setClassification(event.target.value);
+    if (event.target.value === "Emerging Target") {
+      setETarget(true);
+    }
+  };
+  
+  // first submit button
+  const submitButton1 = (event) => {
+    event.preventDefault();
+    console.log(classification + " submitted")
+    if (classification === "Alphanumeric") {
+      setETarget(false);
+      toBeHidden.forEach((element) => {
+        element.classList.remove("hidden");
+      });
+      firstButton.classList.add("purpleColor");
+      if (springbootSection != null) {
+        springbootSection.classList.add("hidden");
+      }
+    } else {
+      eTargetSubmitted();
+    }
+  };
+
+  const alphaChoice = (event) => {
+    setAlpha(event.target.value);
+  };
+
+  const checkEnterKey = (event) => {
+    if (event.code === 'Enter') {
+      console.log(alpha.length);
+      if (alpha.length === 1 && (alphaRegex.test(alpha))) {
+        console.log(alpha + " is a valid letter entry");
+        if (alphaEntry != null) {
+          alphaEntry.classList.remove("red-text");
+        }
+        alphaEntry.classList.add("green-text");
+      } else {
+        setAlpha("error");
+        console.log("error");
+        if (alphaEntry != null) {
+          alphaEntry.classList.remove("green-text");
+        }
+        alphaEntry.classList.add("red-text");
+      }
+    }
+  }
+
+  const colorChoice = (type, color) => {
+    console.log(color + " " + type);
+    if (type === 'alpha') {
+      setAlphaColor(color);
+    } else {
+      setShapeColor(color);
+    }
+  };
+
+  const shapeChoice = (shape) => {
+    setShape(shape);
+  };
+  
+  //final submit button -> link to springboot
+  const submitButton = () => {
+    if (isETarget) {
+      console.log("eTarget final submit? delete??")
+      eTargetSubmitted();
+    } else if (alpha.length === 1 && (alphaRegex.test(alpha))) {
+      if (springbootSection != null) {
+        springbootSection.classList.remove("hidden");  
+      }
+      sendPost();
+      // loadData();
+      console.log(`${target1} ${target2} ${target3} ${target4} ${target5}`);
+    } else {
+      if (springbootSection != null) springbootSection.classList.add("hidden");
+      console.log("check entries for errors");
+    }
+  };
+
+  const eTargetSubmitted = () => {
+    setETarget(true);
+    toBeHidden.forEach((element) => {
+      element.classList.add("hidden");
+    });
+    if (firstButton != null) {
+      firstButton.classList.remove("purpleColor");
+    }
+    console.log("etarget submitted " + isETarget);
+    if (springbootSection === null) {
+      springbootSection = document.querySelector("#springboot");
+    }
+    console.log(springbootSection);
+    if (springbootSection !== null) {
+        springbootSection.classList.remove("hidden");
+    }
+  }
+
+  const toSend = () => {
+    const t = `Target ${targetNum}: `;
+    if (isETarget === true) {
+      return t + " Emerging Target";
+    }
+    return t + `${alphaColor} ${alpha} on a ${shapeColor} ${shape}`;
+  }
+  const message = toSend();
+
+/*
+const [places, setPlaces] = useState([{ placeName:"nyc"}, {placeName:"ithaca"}, {placeName:"colorado"}]);
+
+const onChildPlaceChange = useCallback((newPlace, index) => {
+  const newPlaces = [...places];
+  newPlaces[index] = {placeName:newPlace};
+  setPlaces(newPlaces);
+}, [places]);
+*/
+
+
+const classChoices = ["Emerging Target", "Alphanumeric"];
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        Challenge 2: User Input!
+      </header>
+      
+      {/* Displaying Classifications */}
+      <div>
+      <h4>Current Classifications:</h4>
+        {targets.map((index) => {
+          return (
+          <div style={{padding:6}}>
+            <div className="classifications">
+              <div>
+                <div><span style={{fontWeight: 'bold'}}>Target:</span> {index} </div>
+                <div><span style={{fontWeight: 'bold'}}>Classification: </span>{displayClassifications[index-1]}</div>
+              </div>
+              {/* className="hidden" id="toHide" */}
+              <div style={{paddingLeft: 5}}>
+                <div><span style={{fontWeight: 'bold'}}>Alpha: </span>{displayAlphas[index-1]}</div>
+                <div><span style={{fontWeight: 'bold'}}>Alpha Color: </span>{displayAlphaColors[index-1]}</div>
+              </div>
+              <div >
+                <div><span style={{fontWeight: 'bold'}}>Shape: </span>{displayShapes[index-1]}</div>
+                <div><span style={{fontWeight: 'bold'}}>Shape Color: </span>{displayShapeColors[index-1]}</div>
+              </div>
+            </div>
+          </div>
+        );})}
+      </div>
+      
+      <h1 style={{color: "#247BA0", fontSize:17}}>a fun picture here for no particular reason :)</h1>
+      <img src = "gorgorgorl.png" width="10%" height="10%"></img>
+
+      {/* Make Selections: */}
+      <section>    
+        {/* Targets: */}
+        <div className="padding-ten">
+          <label>Choose target: </label>
+          <select name="selectList" id="selectList" class="dropdown" onChange={selectTarget} value = {targetNum}>
+            <option value="1">Target 1</option>
+            <option value="2">Target 2</option>
+            <option value="3">Target 3</option>
+            <option value="4">Target 4</option>
+            <option value="5">Target 5</option>
+          </select>
+        </div>
+
+        {/* Emerging-Target or Alphanumeric */}
+        <form onSubmit={submitButton1}>
+          {classChoices.map((choice) => {
+            return (
+              <div className="padding-ten">
+                <label>
+                  <input type="radio" value={choice}
+                    checked={classification === choice} onChange={selectClassification}
+                  />
+                  {choice}
+                </label>
+              </div>
+            );
+          })}
+
+          <div className="padding-ten" style={{padding:10}}>
+            <button id="button1" type="submit" class="styleButton">Submit</button>
+          </div>
+        </form>
+
+        {/* Alphanumeric Section */}
+        <div id="toHide" className = "hidden">
+          <div className="spacing">
+            {/* Alpha: */}
+            <div className="padding-ten" style={{paddingRight:15}}>
+            <label id="alphaEntry">Enter an alpha A-Z: 
+              <input type="text" onChange={alphaChoice} onKeyDown = {checkEnterKey}/>
+            </label>
+            </div>
+            {/* Alpha Color: */}
+            <div className="padding-ten" style={{paddingLeft:15}}>
+              <label>Choose the alpha color: </label>
+              <select name="selectList" id="selectList" class="dropdown" onChange={(event) => colorChoice("alpha", event.target.value)}>
+                {colors.map((child, index) => {
+                  return (
+                    <Child 
+                      value={child.value}
+                      key={index}
+                    />
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="spacing">
+            {/* Shape: */}
+            <div className="padding-ten" style={{paddingRight:15}}>
+              <label>Choose a shape: </label>
+              <select name="selectList" id="selectList" class="dropdown" onChange={(event) => shapeChoice(event.target.value)}>
+                {shapes.map((child, index) => {
+                  return (
+                    <Child value={child.value} key={index}/>
+                  );
+                })}
+              </select>
+            </div>
+            {/* Shape Color */}
+            <div className="padding-ten" style={{paddingLeft:15}}>
+              <label>Choose the shape color: </label>
+              <select name="selectList" id="selectList" class="dropdown" onChange={(event) => colorChoice("shape", event.target.value)}>
+                {colors.map((child, index) => {
+                  return (
+                    <Child value={child.value} key={index} />
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          {/* Submit Info */}
+          <div className="padding-ten" style={{padding:10}}>
+            <input class="styleButton" type="submit" value="Submit" onClick={submitButton}/>
+          </div>
+        </div>
+      </section>
+      
+      {/* Springboot: */}
+      <div id="springboot" class="hidden">
+        sending... {message}
+      </div>
+    </div>
+  );
+};
+
+export const Child = (props) => {
+  return (
+    <option value={props.value}>{props.value}</option>
+  )
+}
+
+export default App;
+
+
+uneeded:
+const getRequest = () => {
+    fetch('http://localhost:8080/target/1', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/2', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/3', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/4', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+    fetch('http://localhost:8080/target/5', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+    })
+  }

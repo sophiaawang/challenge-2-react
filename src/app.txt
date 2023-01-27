@@ -1,0 +1,271 @@
+import { useState, useCallback} from "react";
+import './App.css';
+
+// async setState not working super well bc console.logs before the new value is set
+
+export const App = () => {
+    const [classification, setClassification] = useState("Emerging Target");
+    const [targetNum, setTargetNum] = useState(1);
+    const [isETarget, setETarget] = useState(true);
+    
+    const [alpha, setAlpha] = useState('');
+    const [alphaColor, setAlphaColor] = useState("White");
+    const [shapeColor, setShapeColor] = useState("White");
+    const [shape, setShape] = useState("Circle");
+
+    // const [alphaColors, setAlphaColors] = useState([{value}, {text}]);
+
+    const alphaRegex = new RegExp(/^[a-zA-Z]$/);
+    
+    const selectTarget = (tN) => {
+      setTargetNum(tN.target.value);
+      console.log(targetNum + " ");
+      console.log(tN);
+    };
+  
+    const selectClassification = (event) => {
+      setClassification(event.target.value);
+      console.log(classification);
+    };
+  
+    // first submit button
+    const formSubmit = (event) => {
+      event.preventDefault();
+      console.log(classification + " submitted")
+      if (classification === "Alphanumeric") {
+        setETarget(false);
+        console.log("here!");
+        toBeHidden.forEach((element) => {
+          element.classList.remove("hidden");
+        });
+        firstButton.classList.add("purpleColor");
+      } else {
+        // Emergent Target Submitted
+        setETarget(true);
+        toBeHidden.forEach((element) => {
+          element.classList.add("hidden");
+        });
+        if (firstButton != null) {
+          firstButton.classList.remove("purpleColor");
+        }
+        console.log("etarget submitted");
+        submitButton();
+      }
+      if (springbootSection != null) {
+        springbootSection.classList.add("hidden");
+      }
+    };
+
+    const alphaChoice = (event) => {
+      setAlpha(event.target.value);
+      console.log(alpha);
+    };
+  
+    const colorChoice = (type, color) => {
+      console.log(type + " " + color);
+      if (type === 'alpha') {
+        setAlphaColor(color);
+        console.log(alphaColor);
+      } else {
+        setShapeColor(color);
+        console.log(shapeColor);
+      }
+    };
+  
+    const shapeChoice = (shape) => {
+      setShape(shape);
+      console.log(shape);
+    };
+    
+    //final submit button -> link to springboot
+    const submitButton = () => {
+      if (alpha.length === 1 && (alphaRegex.test(alpha))) {
+        console.log("hellooo");
+        if (springbootSection != null) {
+          springbootSection.classList.remove("hidden");
+        }
+      } else if (isETarget) {
+        console.log("hi is eTarget final submit")
+        if (springbootSection != null) {
+          console.log("why doesn't this unhide the section?");
+          springbootSection.classList.remove("hidden");
+        }
+      } else {
+        console.log("check entries for errors");
+      }
+    };
+
+    const checkEnterKey = (event) => {
+      if (event.code === 'Enter') {
+        console.log(alpha.length);
+        if (alpha.length === 1 && (alphaRegex.test(alpha))) {
+          console.log(alpha);
+          console.log("valid letter entry");
+        } else {
+          setAlpha("error");
+          console.log("error");
+        }
+      }
+    }
+
+    // const 
+
+
+  const toBeHidden = document.querySelectorAll("#toHide");
+  const firstButton = document.querySelector("#button1");
+  const springbootSection = document.querySelector("#springboot");
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        Challenge 2: User Input!
+      </header>
+
+      
+      {/* Displaying Classifications */}
+      <div>
+        <h4>Current Classifications:</h4>
+        <div className="classifications">
+          <div>
+            <div><span style={{fontWeight: 'bold'}}>Target:</span> {targetNum} </div>
+            <div><span style={{fontWeight: 'bold'}}>Classification: </span>{classification}</div>
+          </div>
+          <div className="hidden" id="toHide">
+            <div><span style={{fontWeight: 'bold'}}>Alpha: </span>{alpha}</div>
+            <div><span style={{fontWeight: 'bold'}}>Alpha Color: </span>{alphaColor}</div>
+          </div>
+          <div className="hidden" id="toHide">
+            <div><span style={{fontWeight: 'bold'}}>Shape: </span>{shape}</div>
+            <div><span style={{fontWeight: 'bold'}}>Shape Color: </span>{shapeColor}</div>
+          </div>
+        </div>
+      </div>
+      <h1 style={{color: "#247BA0", fontSize:17}}>a fun picture here for no particular reason :)</h1>
+      <div><img src = "gorgorgorl.png" width="15%" height="15%"></img></div>
+
+      <section>      
+      <div className="padding-ten">
+        <label>Choose target: </label>
+        <select name="selectList" id="selectList" class="dropdown" onChange={selectTarget} value = {targetNum}>
+          <option value="1">Target 1</option>
+          <option value="2">Target 2</option>
+          <option value="3">Target 3</option>
+          <option value="4">Target 4</option>
+          <option value="5">Target 5</option>
+        </select>
+        </div>
+
+      {/* Emerging-Target or Alphanumeric */}
+      <form onSubmit={formSubmit}>
+      <div className="padding-ten">
+          <label>
+          <input
+              type="radio"
+              value="Emerging Target"
+              checked={classification === "Emerging Target"}
+              onChange={selectClassification}
+            />
+            Emergent Target
+          </label>
+      </div>
+
+      <div className="padding-ten">
+        <label>
+        <input
+              type="radio"
+              value="Alphanumeric"
+              checked={classification === "Alphanumeric"}
+              onChange={selectClassification}
+            />
+          Alphanumeric
+        </label>
+      </div>
+      <div className="padding-ten" style={{padding:10}}>
+        <button id="button1" type="submit" class="styleButton">Submit</button>
+      </div>
+      </form>
+
+      <div id="toHide" className = "hidden">
+        <div className="spacing">
+          <div className="padding-ten" style={{paddingRight:15}}>
+          <label>Enter an alpha A-Z: 
+            <input type="text" onChange={alphaChoice} onKeyDown = {checkEnterKey}/>
+            {/* value={this.state.value} */}
+          </label>
+          </div>
+          <div className="padding-ten" style={{paddingLeft:15}}>
+            <label>Choose the alpha color: </label>
+            <select name="selectList" id="selectList" class="dropdown" onChange={(event) => colorChoice("alpha", event.target.value)}>
+              <option value="White">White</option>
+              <option value="Black">Black</option>
+              <option value="Gray">Gray</option>
+              <option value="Red">Red</option>
+              <option value="Blue">Blue</option>
+              <option value="Green">Green</option>
+              <option value="Yellow">Yellow</option>
+              <option value="Purple">Purple</option>
+              <option value="Brown">Brown</option>
+              <option value="Orange">Orange</option>
+            </select>
+          </div>
+        </div>
+        <div className="spacing">
+          <div className="padding-ten" style={{paddingRight:15}}>
+            <label>Choose a shape: </label>
+            <select name="selectList" id="selectList" class="dropdown" onChange={(event) => shapeChoice(event.target.value)}>
+                <option value="Circle">Circle</option>
+                <option value="Semicircle">Semicircle</option>
+                <option value="QuarterCircle">QuarterCircle</option>
+                <option value="Triangle">Triangle</option>
+                <option value="Square">Square</option>
+                <option value="Rectangle">Rectangle</option>
+                <option value="Trapezoid">Trapezoid</option>
+                <option value="Pentagon">Pentagon</option>
+                <option value="Hexagon">Hexagon</option>
+                <option value="Heptagon">Heptagon</option>
+                <option value="Octagon">Octagon</option>
+                <option value="Star">Star</option>
+                <option value="Cross">Cross</option>
+            </select>
+          </div>
+          <div className="padding-ten" style={{paddingLeft:15}}>
+            <label>Choose the shape color: </label>
+            <select name="selectList" id="selectList" class="dropdown" onChange={(event) => colorChoice("shape", event.target.value)}>
+                <option value="White">White</option>
+                <option value="Black">Black</option>
+                <option value="Gray">Gray</option>
+                <option value="Red">Red</option>
+                <option value="Blue">Blue</option>
+                <option value="Green">Green</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Purple">Purple</option>
+                <option value="Brown">Brown</option>
+                <option value="Orange">Orange</option>
+              </select>
+          </div>
+        </div>
+        <div className="padding-ten" style={{padding:10}}>
+          <input class="styleButton" type="submit" value="Submit" onClick={submitButton}/>
+        </div>
+      </div>
+      </section>
+      
+      <div id="springboot" class="hidden">
+        add springboot functionality!
+      </div>
+    </div>
+  );
+};
+
+export const optionChild = (value, text) => {
+  return (
+    <div><option value={value}>{text}</option></div>
+  )
+}
+export default App;
+
+{/* <option value="1">Target 1</option>
+            <option value="2">Target 2</option>
+            <option value="3">Target 3</option>
+            <option value="4">Target 4</option>
+            <option value="5">Target 5</option> */}
